@@ -13,10 +13,19 @@ class Cache:
         for url in urls:
             hash_key.update(url.encode('utf-8'))
         return hash_key.hexdigest()
+    
+    def parse_llm_response(self, response_from_llm): ##TODO
+        response_from_llm.split(".")
+        return response_from_llm
 
-    def get_cached_responses(self, question, urls):
+    def get_response_from_llm(self, request):
+        response_from_llm = get_openai_response(request.question, request.docs)
+        parsed_llm_response = self.parse_response(response_from_llm)
+        return parsed_llm_response
+
+    def get_cached_responses(self, request):
         # Generate the cache key based on the question and URLs
-        cache_key = self.generate_cache_key(question, urls)
+        cache_key = self.generate_cache_key(request.question, request.urls)
 
         # Check if the cache key exists in the cache
         if cache_key in self.cache:
@@ -26,7 +35,9 @@ class Cache:
             print("Cache miss!")
 
             # Fetch responses from OpenAI for each URL
-            responses = "dummy responses" ## TODO: fetch responses from openai server.
+            ## TODO: fetch responses from openai server. The request should be asynchronous.
+            responses = self.get_response_from_llm(request)
+            
 
             # Store the responses in the cache
             self.cache[cache_key] = responses

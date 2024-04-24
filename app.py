@@ -1,6 +1,6 @@
 from flask import Flask, Response, request
 import json
-from utils.process_requests import RequestHandler
+from utils.process_requests import RequestHandler, Requests
 
 app = Flask(__name__)
 request_handler = RequestHandler()
@@ -28,10 +28,11 @@ def submit_question_and_documents():
     body = request.get_json()
     ques = body.get("question")
     docs_url = body.get("documents")
+
     if ques is None or docs_url is None:
         return Response("Bad Request",status=400)
     
-    request_handler.add_request(ques, docs_url)
+    request_handler.add_request_to_request_queue(ques, docs_url)
 
     return Response("All Good!",status=200)
 
@@ -51,7 +52,7 @@ def get_question_and_facts():
             }
         "status": "done" if the response is ready, "processing" if the response is not ready yet.        
     """
-    if request_handler.responses_queue.empty():
+    if request_handler.get_from_response_queue() is None:
         response = {"question":request_handler.current_question, "facts": None, "status": "processing"}
         return Response(json.dumps(response),status=200)
     
