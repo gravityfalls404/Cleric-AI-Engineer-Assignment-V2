@@ -1,7 +1,5 @@
 import openai
 
-openai.api_key = 'sk-proj-O8tBCwyJ2ayGPcbguaO8T3BlbkFJjYUrvju7Ghfbzc4G0OBF'
-
 def get_openai_response(question, documents):
     # Create a prompt by combining the question and the list of documents
     prompt = f"I'm going to give you a list of call logs and along with that a question related to what the team has decided based on the logs. Give response in bullet points. Q: {question}\nDocuments:\n" + '\n'.join(documents)
