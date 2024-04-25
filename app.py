@@ -1,9 +1,10 @@
 from flask import Flask, Response, request
 import json
-from utils.process_requests import RequestHandler, Requests
+from utils import ResponseHandler, Requests
+from task import process_request
 
 app = Flask(__name__)
-request_handler = RequestHandler()
+response_handler = ResponseHandler()
 
 @app.route("/health-check", methods=['GET'])
 def health_check():
@@ -28,11 +29,15 @@ def submit_question_and_documents():
     body = request.get_json()
     ques = body.get("question")
     docs_url = body.get("documents")
-
+    
     if ques is None or docs_url is None:
         return Response("Bad Request",status=400)
     
-    request_handler.add_request_to_request_queue(ques, docs_url)
+    request_ = Requests(ques, docs_url)
+    task = process_request.delay(ques, docs_url)
+    request_.set_task(task)
+
+    response_handler.add_to_response_queue(request_)
 
     return Response("All Good!",status=200)
 
@@ -52,12 +57,13 @@ def get_question_and_facts():
             }
         "status": "done" if the response is ready, "processing" if the response is not ready yet.        
     """
-    if request_handler.get_from_response_queue() is None:
-        response = {"question":request_handler.current_question, "facts": None, "status": "processing"}
+    status, question = response_handler.peep_from_response_queue()
+    if not status:
+        response = {"question": question, "facts": None, "status": "processing"}
         return Response(json.dumps(response),status=200)
     
-    request = request_handler.get_from_response_queue()
-    response = {"question":request.question, "facts": request.docs_urls, "status": "done"}
+    request = response_handler.pop_from_response_queue()
+    response = {"question":request.question, "facts": request.response, "status": "done"}
     return Response(json.dumps(response),status=200)
 
 
