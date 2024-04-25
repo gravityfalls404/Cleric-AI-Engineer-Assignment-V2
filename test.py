@@ -35,7 +35,6 @@ input_queue.put("Message 3")
 # Wait for the processing to finish (join the processing thread)
 input_queue.join()
 
-# Retrieve processed messages from the output queue
 while not output_queue.empty():
     processed_message = output_queue.get()
     print(processed_message)

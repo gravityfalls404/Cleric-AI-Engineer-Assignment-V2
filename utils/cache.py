@@ -1,5 +1,5 @@
 import hashlib
-from gpt4 import get_openai_response
+from utils.gpt4 import get_openai_response
 
 
 class Cache:
@@ -37,8 +37,9 @@ class Cache:
             # Fetch responses from OpenAI for each URL
             ## TODO: fetch responses from openai server. The request should be asynchronous.
             responses = self.get_response_from_llm(request)
-            
+            request.status = "done"
+            request.response = responses
 
             # Store the responses in the cache
-            self.cache[cache_key] = responses
-            return responses
+            self.cache[cache_key] = request
+            return request

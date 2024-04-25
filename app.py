@@ -56,11 +56,12 @@ def get_question_and_facts():
         response = {"question":request_handler.current_question, "facts": None, "status": "processing"}
         return Response(json.dumps(response),status=200)
     
-    response = request_handler.get_from_response_queue()
+    request = request_handler.get_from_response_queue()
+    response = {"question":request.question, "facts": request.docs_urls, "status": "done"}
     return Response(json.dumps(response),status=200)
 
 
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0', port=5000, debug=True)

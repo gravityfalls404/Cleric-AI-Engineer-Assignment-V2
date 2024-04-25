@@ -1,9 +1,8 @@
 from uuid import uuid4
-from gpt4 import get_openai_response
 import queue
 import time
 import requests
-from cache import Cache
+from utils.cache import Cache
 
 cache = Cache()
 
@@ -13,7 +12,8 @@ class Requests:
         self.docs_urls = documents_urls
         self.status = "processing"
         self.request_id = str(uuid4())
-        self.docs = self.get_docs_from_urls(self.documents_urls)
+        self.docs = self.get_docs_from_urls(documents_urls)
+        self.response = None
     
     def read_text_from_url(self, url):
         try:
@@ -48,9 +48,6 @@ class RequestHandler:
         self.responses_queue.put(request)
     
     def get_from_request_queue(self):
-        if self.requests_queue.empty():
-            return
-        
         request = self.requests_queue.get(timeout=1)
         return request
     
@@ -58,14 +55,15 @@ class RequestHandler:
         if self.responses_queue.empty():
             return
         
-        response = self.responses_queue.get()
+        response = self.responses_queue.get(timeout=1)
         return response
 
     
-    async def process_request(self):
+    def process_request(self):
         while True:
             try:
                 request = self.get_from_request_queue()
+                self.current_question = request.question
                 processed_request = cache.get_cached_responses(request)
                 self.add_request_to_response_queue(processed_request)
             except queue.Empty:
