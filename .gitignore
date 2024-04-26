@@ -2,3 +2,5 @@ test.py
 .vscode
 __pycache__/
 utils/__pycache__/
+constants.py
+test.py

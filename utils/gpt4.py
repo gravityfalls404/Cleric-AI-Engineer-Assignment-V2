@@ -1,11 +1,11 @@
 import openai
 from utils.requests import Requests
 import time
-from utils import cache
+from constants import OPENAI_API_KEY
 
 class GPT4:
     def __init__(self):
-        pass
+        self.client = openai.Client(api_key=OPENAI_API_KEY)
 
     def parse_llm_response(self, response_from_llm):
         response_from_llm.split(".")
@@ -13,16 +13,31 @@ class GPT4:
 
 
     def get_openai_response(self, request: Requests):
-        ### Method to query Gpt4 using OpenAI API.
-        time.sleep(5)
-        return "dummy_response"
+        ### This method will be used to query openai api.
+        ### first it'll read the prompt from the prompt.txt file and send it to openai.
+        ### then it'll use the request.docs which is a list of documents to send request to 
+        ### the openai api one at a time. Final response from the api will be returned.
+        ### The response from the api will be stored in the request object.
+        ### The request object will be added to the RESPONSE_QUEUE.
+        ### The RESPONSE_QUEUE will be used by the worker to process the requests.
+        prompt = open("prompt.txt", "r")
+        prompt_text = prompt.read()
+        _ = openai.Completion.create(
+            engine="text-davinci-003",
+            prompt=prompt_text,
+        )
+        docs = [request.question]
+        for doc in request.docs:
+            docs.append(doc)
+            response = openai.Completion.create(
+                engine="text-davinci-003",
+                prompt = prompt_text,
+                message=docs
+            )
+        return response.choices[0].text.strip()
+        
         
     def get_response_from_llm(self, request: Requests):
-        ### Create a prompt by combining the question and the list of documents.
-        ### Using the prompt and the documents one at a time get the final response from OpenAI.
-        ### Parse and return the response.
-        # prompt = f"I'm going to give you a list of call logs and along with that a question related to what the team has decided based on the logs. Give response in bullet points. Q: {reqquestion}\nDocuments:\n" + '\n'.join(documents)
-
         response_from_llm = self.get_openai_response(request)
         parsed_llm_response = self.parse_llm_response(response_from_llm)
         return parsed_llm_response

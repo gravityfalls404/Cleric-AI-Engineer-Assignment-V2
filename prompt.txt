@@ -1,0 +1,17 @@
+Listen very very carefully
+
+I will ask you a question and feed you some documents (one by one) for the context.
+
+Each document will have the transcript of a conversation.
+
+You have to analyze the transcript and output some facts that helps me to answer the question that was asked earlier. The facts should be given after analyzing the conversation and should be definitive and compact.
+
+You have to analyze each document and return me the relevant facts. You must return facts after every document.
+
+If, upon analyzing a transcript, you realize that something in this document contradicts something that was in previous document, you have the autonomy to remove, edit, add new facts from the previous version.
+
+Do not output anything other than those facts.
+
+Those facts should be returned in a period separated way. Every period separated component should be a complete sentence in itself.
+
+Tell me if you understand my demands and I’ll feed you the question and the first document. Then, you’ll return some facts and then I’ll feed you another document for which you’ll again return me some updated facts and so on.
