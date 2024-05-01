@@ -8,33 +8,27 @@ class GPT4:
         self.client = openai.Client(api_key=OPENAI_API_KEY)
 
     def parse_llm_response(self, response_from_llm):
-        response_from_llm.split(".")
+        response_from_llm = list(filter(len, response_from_llm.split(".")))
         return response_from_llm
 
 
     def get_openai_response(self, request: Requests):
-        ### This method will be used to query openai api.
-        ### first it'll read the prompt from the prompt.txt file and send it to openai.
-        ### then it'll use the request.docs which is a list of documents to send request to 
-        ### the openai api one at a time. Final response from the api will be returned.
-        ### The response from the api will be stored in the request object.
-        ### The request object will be added to the RESPONSE_QUEUE.
-        ### The RESPONSE_QUEUE will be used by the worker to process the requests.
         prompt = open("prompt.txt", "r")
         prompt_text = prompt.read()
-        _ = openai.Completion.create(
-            engine="text-davinci-003",
-            prompt=prompt_text,
+        docs = list()
+        docs.append({"role": "system", "content": prompt_text + '\n' + request.question})
+        _ = self.client.chat.completions.create(
+            model="gpt-4",
+            messages=docs
         )
-        docs = [request.question]
         for doc in request.docs:
-            docs.append(doc)
-            response = openai.Completion.create(
-                engine="text-davinci-003",
-                prompt = prompt_text,
-                message=docs
+            docs.append({"role": "user", "content": doc})
+            response = self.client.chat.completions.create(
+                model="gpt-4",
+                messages=docs
             )
-        return response.choices[0].text.strip()
+        return response.choices[0].message.content
+
         
         
     def get_response_from_llm(self, request: Requests):

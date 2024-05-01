@@ -18,10 +18,8 @@ class Cache:
         cache_key = self.generate_cache_key(request)
 
         if cache_key in self.cache:
-            print("Cache hit!")
             return self.cache[cache_key]
         
-        print("Cache miss!")
         return
     
     def add_to_cache(self, request, response):

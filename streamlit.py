@@ -44,7 +44,10 @@ def main():
             elif response['status'] == 'processing':
                 st.write('Processing...')
             elif response['status'] == 'done':
-                st.write(f'Facts: {response["facts"]}')
+                output = ''
+                for _fact in response['facts']:
+                    output += "- " + _fact + "\n"
+                st.markdown(output)
             else:
                 st.write('An error occurred while fetching the response.')
         else:
