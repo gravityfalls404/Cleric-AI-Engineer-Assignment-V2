@@ -1,7 +1,8 @@
 from celery import Celery
 from utils import Cache, Requests, GPT4
+import os
 
-celery = Celery('task', broker='redis://localhost:6379/0', backend="redis://localhost:6379/0")
+celery = Celery('task', broker=os.environ.get("REDIS_URL"), backend=os.environ.get("REDIS_URL"))
 
 RESPONSE_QUEUE = list()
 cache = Cache()

@@ -1,6 +1,5 @@
 import openai
 from utils.requests import Requests
-import time
 import os
 
 class GPT4:
