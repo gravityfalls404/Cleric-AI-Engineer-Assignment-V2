@@ -1,11 +1,11 @@
 import openai
 from utils.requests import Requests
 import time
-from constants import OPENAI_API_KEY
+import os
 
 class GPT4:
     def __init__(self):
-        self.client = openai.Client(api_key=OPENAI_API_KEY)
+        self.client = openai.Client(api_key=os.environ.get("OPENAI_API_KEY"))
 
     def parse_llm_response(self, response_from_llm):
         response_from_llm = list(filter(len, response_from_llm.split(".")))
