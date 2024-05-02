@@ -2,9 +2,16 @@ from flask import Flask, Response, request
 import json
 from utils import ResponseHandler, Requests
 from task import process_request
+from flask import send_from_directory
+import os
 
 app = Flask(__name__)
 response_handler = ResponseHandler()
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='images/favicon.png')
 
 @app.route("/health-check", methods=['GET'])
 def health_check():
