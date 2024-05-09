@@ -3,6 +3,11 @@ from utils.requests import Requests
 import os
 
 class GPT4:
+    """
+        Class representing all the methods related to GPT4.
+        Requesting and processing the responses from API.
+    """
+
     def __init__(self):
         self.client = openai.Client(api_key=os.environ.get("OPENAI_API_KEY"))
 

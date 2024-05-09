@@ -3,6 +3,10 @@ from utils.requests import Requests
 
 
 class Cache:
+    """
+        Caching object. Check for the HASH code for the incoming requests and returns the stored
+        response from the cache in case of cache hits. Else return None.
+    """
     def __init__(self):
         self.cache = {}
 

@@ -3,6 +3,9 @@ import json
 import requests
 
 class Requests:
+    """
+        Class is a bluefprint of request entity with metadata about the request.
+    """
     def __init__(self, question, documents_urls):
         self.question = question
         self.docs_urls = documents_urls

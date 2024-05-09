@@ -1,6 +1,11 @@
 import queue
 
 class ResponseHandler():
+    """
+        Class consisting of methods for responding to the response api calls.
+        The class is responsible for adding requests to the response queue,
+        popping requests from the response queue and checking if the response is ready.
+    """
     def __init__(self):
         self.response_queue = queue.Queue()
 
