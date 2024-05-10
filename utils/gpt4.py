@@ -13,6 +13,7 @@ class GPT4:
 
     def parse_llm_response(self, response_from_llm):
         response_from_llm = list(filter(len, response_from_llm.split(".")))
+        response_from_llm = [s.strip() for s in response_from_llm]
         return response_from_llm
 
 
