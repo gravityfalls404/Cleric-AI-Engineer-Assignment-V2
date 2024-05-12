@@ -46,7 +46,7 @@ def submit_question_and_documents():
 
     response_handler.add_to_response_queue(request_)
 
-    return Response("All Good!",status=200)
+    return Response(json.dumps({"status": "submitted"}),status=200)
 
 @app.route("/get_question_and_facts", methods=['GET'])
 def get_question_and_facts():
